@@ -46,7 +46,7 @@ import {
           <Image
             alt={'Login Image'}
             objectFit={'cover'}
-            boxSize={{sm: '400px' ,md: '300px' , lg: '800px'}}
+            boxSize={{sm: '400px' ,md: '300px' , lg: '500px'}}
             align={'center'}
             justifyContent={'center'}
             src={
