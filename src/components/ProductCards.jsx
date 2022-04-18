@@ -16,7 +16,7 @@ return (
         <Box
             role={'group'}
             p={6}
-            maxW={'330px'}
+            maxW={'250px'}
             w={'full'}
             bg={useColorModeValue('white', 'gray.800')}
             boxShadow={'2xl'}
@@ -27,7 +27,7 @@ return (
             rounded={'lg'}
             mt={-12}
             pos={'relative'}
-            height={'230px'}
+            height={'200px'}
             _after={{
                 transition: 'all .3s ease',
                 content: '""',
