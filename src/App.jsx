@@ -20,6 +20,10 @@ import Footer from './components/Footer';
 import Login from './components/Login';
 import Register from './components/Register';
 import { Product } from './pages/Product';
+import ProductDetail from './pages/ProductDetail';
+import  Contact  from './pages/Contact';
+import UserProfile from './pages/UserProfile';
+
 function App() {
   return (
     <ChakraProvider theme={theme}>
@@ -30,6 +34,9 @@ function App() {
             <Route exact path="/login" element={  <Login /> } />
             <Route exact path="/register" element={ <Register /> } />
             <Route exact path="/product" element={ <Product />}></Route>
+            <Route exact path="/product/:id" element={ <ProductDetail />}></Route>
+            <Route exact path="/userprofile/:id" element={ <UserProfile />}></Route>
+            <Route exact path="/contact" element={ <Contact />}></Route>
         </Routes>
 
         <Footer />

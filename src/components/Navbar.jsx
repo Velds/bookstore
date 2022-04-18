@@ -126,7 +126,8 @@ const DesktopNav = () => {
                   textDecoration: 'none',
                   color: linkHoverColor,
                 }}>
-                {navItem.label}
+                <RouterLink to={`/${navItem.label}`}> {navItem.label} </RouterLink>
+               
               </Link>
             </PopoverTrigger>
 
@@ -217,7 +218,9 @@ const MobileNavItem = ({ label, children, href }) => {
         <Text
           fontWeight={600}
           color={useColorModeValue('gray.600', 'gray.200')}>
-          {label}
+            <RouterLink to={`/${label}`}>
+              {label}
+            </RouterLink>
         </Text>
         {children && (
           <Icon
@@ -261,7 +264,7 @@ const MobileNavItem = ({ label, children, href }) => {
    
 const NavItem =  [
   {
-    label: 'Products',
+    label: 'Product',
     children: [
       {
         label: 'Our best seller',
@@ -279,7 +282,7 @@ const NavItem =  [
     label: 'About'
   },
   {
-    label: 'Contacts',
+    label: 'Contact',
     href: '#',
   }
 ];
