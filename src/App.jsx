@@ -23,7 +23,9 @@ import { Product } from './pages/Product';
 import ProductDetail from './pages/ProductDetail';
 import  Contact  from './pages/Contact';
 import UserProfile from './pages/UserProfile';
-
+import Checkout from './pages/Checkout';
+import { AdminIndex } from './admin/AdminIndex';
+import { CreateBooks } from './admin/CreateBooks';
 function App() {
   return (
     <ChakraProvider theme={theme}>
@@ -37,6 +39,11 @@ function App() {
             <Route exact path="/product/:id" element={ <ProductDetail />}></Route>
             <Route exact path="/userprofile/:id" element={ <UserProfile />}></Route>
             <Route exact path="/contact" element={ <Contact />}></Route>
+            <Route exact path="/checkout" element={<Checkout />}></Route>
+            {/* Admin, unprotected for now */}
+            <Route exact path="/admin/createbooks" element={<CreateBooks />}></Route>
+            <Route exact path="/admin/" element={<AdminIndex />}></Route>
+
         </Routes>
 
         <Footer />

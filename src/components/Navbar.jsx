@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Box,
     Flex,
@@ -23,10 +23,55 @@ import {
     ChevronRightIcon,
 } from '@chakra-ui/icons';
 
-import { Link as RouterLink} from 'react-router-dom'
+
+import { Link as RouterLink, Router, useNavigate} from 'react-router-dom'
+import jwtDecode from 'jwt-decode';
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
+  const [ isAuthorized, setAuthorized] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
+  const navigate = useNavigate();
+  useEffect(() =>{
+    let isLogged = localStorage.getItem('isLoggedIn');
+    if(isLogged){
+      setIsLoggedIn(true);
+      let profile = JSON.parse(localStorage.getItem('profile'));
+      console.log(profile);
+      setUserName(profile.name);
+    }
+  })
+  useEffect(() => {
+    console.log(localStorage.getItem('TOKEN'));    
+    let token = localStorage.getItem('TOKEN');
+    let decodedToken;
+    let valid = true
+    try{
+       decodedToken = jwtDecode(token) 
+    }
+    catch (e){
+      console.log('error', e);
+      valid = false; 
+    }
+    let currentDate = new Date();
+    if(valid && decodedToken.exp * 1000 < currentDate.getTime()){
+      setAuthorized(false);
+      console.log('Token expired or no token');
+    }
+    else{
+      setAuthorized(true);
+      console.log('Authorized');
+    }
+  }, [localStorage.getItem('TOKEN')])
+
+
+  const logout = () => {
+    localStorage.clear();
+    setAuthorized(false);
+    setIsLoggedIn(false);
+    navigate('/');
+  }
 
   return (
     <Box>
@@ -73,15 +118,16 @@ export default function Navbar() {
           justify={'flex-end'}
           direction={'row'}
           spacing={6}>
-          <Button
+          { !isLoggedIn && <Button
             as={'a'}
             fontSize={'lg'}
             fontWeight={400}
             variant={'link'}
             href={'#'}>
-            <RouterLink to="/login">Sign In</RouterLink>
-          </Button>
-          <Button
+             <RouterLink to="/login">Sign In</RouterLink>
+          </Button>}
+
+          {!isLoggedIn && <Button
             display={{ base: 'none', md: 'inline-flex' }}
             fontSize={'lg'}
             fontWeight={600}
@@ -94,7 +140,33 @@ export default function Navbar() {
             <RouterLink to="/register">
               Sign Up
             </RouterLink>
-          </Button>
+          </Button>}
+
+          { isLoggedIn && <Button
+            as={'a'}
+            fontSize={'lg'}
+            fontWeight={400}
+            variant={'link'}
+            href={'#'}>
+              <Link color="black">
+                <RouterLink to={`/userprofile/${userName}`}>{userName}</RouterLink>
+              </Link>
+          </Button>}
+
+          {isLoggedIn && <Button
+            display={{ base: 'none', md: 'inline-flex' }}
+            fontSize={'lg'}
+            fontWeight={600}
+            color={'white'}
+            bg={'orange.400'}
+            href={'#'}
+            _hover={{
+              bg: 'orange.300',
+            }}
+            onClick={() => logout()}
+            >
+              Logout
+          </Button>}
         </Stack>
       </Flex>
 
@@ -131,21 +203,6 @@ const DesktopNav = () => {
               </Link>
             </PopoverTrigger>
 
-            {navItem.children && (
-              <PopoverContent
-                border={0}
-                boxShadow={'xl'}
-                bg={popoverContentBgColor}
-                p={4}
-                rounded={'xl'}
-                minW={'sm'}>
-                <Stack>
-                  {navItem.children.map((child) => (
-                    <DesktopSubNav key={child.label} {...child} />
-                  ))}
-                </Stack>
-              </PopoverContent>
-            )}
           </Popover>
         </Box>
       ))}
@@ -222,33 +279,10 @@ const MobileNavItem = ({ label, children, href }) => {
               {label}
             </RouterLink>
         </Text>
-        {children && (
-          <Icon
-            as={ChevronDownIcon}
-            transition={'all .25s ease-in-out'}
-            transform={isOpen ? 'rotate(180deg)' : ''}
-            w={6}
-            h={6}
-          />
-        )}
+        
       </Flex>
 
-      <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
-        <Stack
-          mt={2}
-          pl={4}
-          borderLeft={1}
-          borderStyle={'solid'}
-          borderColor={useColorModeValue('gray.200', 'gray.700')}
-          align={'start'}>
-          {children &&
-            children.map((child) => (
-              <Link key={child.label} py={2} href={child.href}>
-                {child.label}
-              </Link>
-            ))}
-        </Stack>
-      </Collapse>
+      
     </Stack>
   );
 };
@@ -277,9 +311,6 @@ const NavItem =  [
         href: '#',
       },
     ],
-  },
-  {
-    label: 'About'
   },
   {
     label: 'Contact',

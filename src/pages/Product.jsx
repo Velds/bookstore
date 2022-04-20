@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Flex,
   Box,
@@ -16,10 +16,18 @@ import {
 import { Link as RouterLink} from 'react-router-dom'
 import ProductCards from '../components/ProductCards';
 import { SearchIcon } from '@chakra-ui/icons';
-
+import axios from 'axios';
+import { baseURL } from '../baseUrl';
 export const Product = () => {
   const [categories, setCategories] = useState("Fiction");
-
+  const [bookList, setBookList] = useState([]);
+  const [isReady, setReady] = useState(false)
+  useEffect(async ()  => {
+    let result = await axios.get(`${baseURL}/api/books`)
+    console.log(result.data);
+    
+    setBookList(result.data)
+  }, [])
 
   return (
     <Flex
@@ -91,16 +99,28 @@ export const Product = () => {
           columnGap='2em'
           justify={{base: 'center', 'md': 'flex-start'}}
         >
-          <Box cursor="pointer">
+          {/* <Box cursor="pointer">
             <RouterLink to="/Product/testing">
               <ProductCards />
             </RouterLink>
-          </Box>
+          </Box> */}
+          {
+            bookList.map((book, key) => 
+              
+              <Box key={book._id} cursor="pointer">
+                {/* /Product/testing */}
+                <RouterLink to={`/Product/${book._id}`}>
+                  <ProductCards key={book._id} genre={book.genre} name={book.name} image={book.image} price={book.price} rating={book.rating} />
+                </RouterLink>
+              </Box>
+            )
+          }
+          {/* {JSON.stringify(bookList)} */}
+            {/* <ProductCards />
             <ProductCards />
             <ProductCards />
             <ProductCards />
-            <ProductCards />
-            <ProductCards />
+            <ProductCards /> */}
         </Flex>
       </Box>
     </Flex>
